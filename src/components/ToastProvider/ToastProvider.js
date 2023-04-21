@@ -1,23 +1,18 @@
 import React from "react";
-import handleKeyDown from './handleKeyDown';
+import useKeydown from "../../custom-hooks/use-keydown";
 
 export const ToastContext = React.createContext();
 
 // Handle everything "toast related" inside ToastProvider
 function ToastProvider({ children }) {
   const [toasts, setToasts] = React.useState([]);
-  // handleKeyDown(setToasts); CUSTOM HOOK TEST
 
-  // Dimiss all the toasts when pressing ESC
-  React.useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.code === 'Escape') { setToasts([]) }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    }
+  const handleEscape = React.useCallback(() => {
+    setToasts([]);
   }, [])
+  // Custom hook to handle Escape Key
+  useKeydown('Escape', handleEscape);
+
 
   function createToast(message, variant) {
     const nextToasts = [...toasts, { id: crypto.randomUUID(), message, variant }];

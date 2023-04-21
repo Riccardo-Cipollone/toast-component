@@ -1,13 +1,17 @@
 import React from "react";
-
-export default function useEscKey(callback) {
+// Generic custom hook to handle any keyboard key to execute a callback
+function useKeydown(key, callback) {
     React.useEffect(() => {
         function handleKeyDown(event) {
-            if (event.code === 'Escape') { callback([]) }
+            if (event.code === key) {
+                callback(event);
+            }
         }
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }
-    }, [callback])
+    }, [key, callback])
 }
+
+export default useKeydown;
