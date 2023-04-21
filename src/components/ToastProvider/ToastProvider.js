@@ -1,11 +1,23 @@
 import React from "react";
+import handleKeyDown from './handleKeyDown';
 
 export const ToastContext = React.createContext();
 
+// Handle everything "toast related" inside ToastProvider
 function ToastProvider({ children }) {
-  const [toasts, setToasts] = React.useState([
-    { id: crypto.randomUUID(), message: 'oh no, lol', variant: 'error' },
-  ]);
+  const [toasts, setToasts] = React.useState([]);
+  // handleKeyDown(setToasts); CUSTOM HOOK TEST
+
+  // Dimiss all the toasts when pressing ESC
+  React.useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.code === 'Escape') { setToasts([]) }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [])
 
   function createToast(message, variant) {
     const nextToasts = [...toasts, { id: crypto.randomUUID(), message, variant }];
